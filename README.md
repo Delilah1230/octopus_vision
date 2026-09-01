@@ -30,43 +30,32 @@ cp .env.example .env        # then fill in GEMINI_API_KEY
 
 Keys are read from the environment or from `.env`; nothing is hard-coded.
 
-## Database
+## Setup
 
-The runners expect a local PostgreSQL with the connection settings in
-`vision_evaluation/movie/protocol.py` (`DB`). These are local development
-credentials, not secrets:
-
-```
-host 127.0.0.1  port 5432  dbname octopus  user octopus_user
-```
-
-Override them by editing that dict if your instance differs.
-
-## Database schema
+The runners expect a local PostgreSQL. Connection settings are the `DB` dict in
+`vision_evaluation/movie/protocol.py` (`127.0.0.1:5432`, database `octopus`, user
+`octopus_user`); these are local development credentials, not secrets. Edit that
+dict if your instance differs.
 
 ```bash
 createdb octopus
 psql -d octopus -f schema.sql
 ```
 
-`schema.sql` is the table layout the runners expect. `movie_reviews` is worth a
-look: the `tag_*` columns in it are tags, stored as ordinary Boolean columns that
-SQL filters like any other, which is the whole of the data model the paper argues
+In `schema.sql`, the `tag_*` columns of `movie_reviews` are tags: ordinary Boolean
+columns that SQL filters like any other, which is the data model the paper argues
 for.
 
-## Data
-
-The movie scenario comes from SemBench (`SemBench/SemBench` on GitHub,
-`src/scenario/movie`). Obtain its `sf_2000` sample from that repository and place
-it under `cidr_evaluation/sembench/files/movie/data/sf_2000`, then:
+The movie scenario itself comes from SemBench (`SemBench/SemBench` on GitHub,
+`src/scenario/movie`). Place its `sf_2000` sample under
+`cidr_evaluation/sembench/files/movie/data/sf_2000`, then:
 
 ```bash
 python vision_evaluation/movie/prepare_data.py
 ```
 
-This produces the single input every system reads: SemBench's `sf_2000` sample
-with exact-duplicate reviews removed. All four baselines and Octopus read the same
-rows and the same ground truth, so the comparison is like for like.
+This builds the one input every system reads, `sf_2000` with exact-duplicate
+reviews removed, so all five systems see the same rows and the same ground truth.
 
 ## Running
 
@@ -107,33 +96,12 @@ python vision_evaluation/movie/evaluate.py
 python vision_evaluation/movie/build_table.py
 ```
 
-## Layout
-
-```
-scripts/                     the Octopus prototype
-  query_parser.py            natural language to a plan of tag and relational operators
-  octopimizer.py             decides how the plan executes
-  state_manager.py           the tag store and its provenance
-  cascade*.py                model execution
-  connect_api.py             model providers; reads keys from the environment
-vision_evaluation/movie/     the SemBench movie experiment
-  queries.json               the queries, gold SQL and metric per query
-  sembench_declared.json     the baseline numbers as published by SemBench
-  protocol.py                settings shared by every runner
-  run_*.py                   one runner per system
-  evaluate.py                the scorer
-vision_evaluation/predicates/  predicate definitions used by the tag operators
-```
-
 ## Notes on the numbers
 
-Baseline results for LOTUS, Palimpzest, ThalamusDB and BigQuery are SemBench's own
-at scale factor 2000 under `gemini-2.5-flash`; `sembench_declared.json` records
-them together with their provenance. ThalamusDB does not implement Q9 or Q10, so
-its average covers eight queries and is not comparable to a nine-query mean. Q10
-is excluded from the paper: it asks for the mean of a per-review score from 1 to 5
-while its ground truth is the movie's audience score from 1 to 100, so the two do
-not measure the same quantity.
-
-Reported cost and latency cover the semantic operators' model calls. The parser's
-single call per query sits outside them.
+Baseline results are SemBench's own at scale factor 2000 under
+`gemini-2.5-flash`; `sembench_declared.json` records them with their provenance.
+ThalamusDB implements neither Q9 nor Q10, so its average covers eight queries.
+Q10 is excluded from the paper: it asks for the mean of a per-review score from 1
+to 5 while its ground truth is the movie's audience score from 1 to 100. Reported
+cost and latency cover the semantic operators' model calls; the parser's single
+call per query sits outside them.
