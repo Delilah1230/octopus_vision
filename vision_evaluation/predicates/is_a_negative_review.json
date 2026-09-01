@@ -1,0 +1,43 @@
+{
+  "slug": "is_a_negative_review",
+  "key": "is a negative review",
+  "context": "a professional film critic's short written review of one movie, as published on a review-aggregation site",
+  "scheme": "related",
+  "n": 6,
+  "generated_by": "gemini-3.6-flash",
+  "generated_at": "2026-08-11",
+  "instruction_sha256": "37bbcf8677a052df",
+  "prompt": "You design evaluation questions for a data system that filters records with a\nnatural-language predicate.\n\nYou are given ONE predicate: a property that a record may or may not satisfy,\nand a description of WHAT KIND OF RECORD it is evaluated over. Write exactly\n6 independent questions about a record, which a downstream model will\nanswer with \"T\", \"F\", or \"cannot_determine\" using only that record's text.\n\nWrite the questions for THE RECORD KIND YOU ARE GIVEN. Do not assume a domain\nthat was not stated, and do not name entities the record kind does not mention.\n\nREQUIREMENTS:\n1. SAME DIRECTION. For EVERY question, the answer \"T\" must mean evidence that\n   the predicate HOLDS, and \"F\" must mean evidence that it does NOT hold. Never\n   phrase a question so that \"T\" argues against the predicate.\n2. INDEPENDENT ANGLES. The questions should approach the predicate from\n   different angles -- an explicit statement, an inference from attributes, a\n   category or type prior, a characteristic consequence, a typical phrasing, an\n   absence of disqualifiers -- so that they are not paraphrases of each other\n   and do not all fail together on the same kind of record.\n3. EQUAL STANDING. Each question is answered on its own and counted equally. Do\n   not write a question that only makes sense given another one's answer, and do\n   not write one that is merely a restatement of the predicate.\n4. SELF-CONTAINED. One sentence each, answerable from the record's text alone,\n   with no reference to the other questions.\n\nOutput ONLY schema-conformant JSON: an object with a \"subquestions\" array of\nexactly 6 objects, each {\"sub_type\": \"related\", \"text\": \"...\"}.\n\nRECORD KIND: a professional film critic's short written review of one movie, as published on a review-aggregation site\nPREDICATE: \"is a negative review\"\n",
+  "subquestions": [
+    [
+      "neg_R1",
+      "related",
+      "Does the critic explicitly assign a low rating or express overall dissatisfaction with the movie?"
+    ],
+    [
+      "neg_R2",
+      "related",
+      "Does the review use strongly critical or derogatory language to describe the film?"
+    ],
+    [
+      "neg_R3",
+      "related",
+      "Does the critic explicitly warn viewers to avoid watching the movie or save their money?"
+    ],
+    [
+      "neg_R4",
+      "related",
+      "Does the review focus primarily on significant flaws in major cinematic elements such as acting, direction, or writing?"
+    ],
+    [
+      "neg_R5",
+      "related",
+      "Does the critic conclude that the movie fails to deliver on its premise or entertain its target audience?"
+    ],
+    [
+      "neg_R6",
+      "related",
+      "Is the review devoid of positive recommendations or praise for the film as a whole?"
+    ]
+  ]
+}

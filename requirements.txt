@@ -1,0 +1,13 @@
+# Core (Octopus runners + scorer)
+psycopg2-binary
+google-genai
+openai
+python-dotenv
+pandas
+scipy
+
+# Baselines. Each needs its own environment: LOTUS pins python<3.13,
+# Palimpzest needs >=3.12, so they cannot share an interpreter.
+#   lotus-ai==1.1.3
+#   palimpzest==0.8.2
+#   thalamusdb==0.1.15
